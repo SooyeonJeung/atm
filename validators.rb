@@ -9,10 +9,6 @@ module Validators
          # else return false
             return false
         end
-
-
-        
-       
     end
 end
 
