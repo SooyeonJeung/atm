@@ -7,7 +7,7 @@ atm_view = AtmView.new
 def welcome_and_input(atm_view)
 # todo - seperate welcome messages for unit testing
     atm_view.show_options
-    
+
     input = gets.chomp
     input_valid = Validators.validate_input(input)
     if !input_valid
@@ -16,21 +16,21 @@ def welcome_and_input(atm_view)
         puts "Invalid input, please enter a number from 1-4"
         puts "Press any key to continue"
         gets 
-        welcome_and_input()
-    end
-
+        welcome_and_input(atm_view)
+    end   
+    
     case input.to_i
     when 1
         balance = File.read('balance.txt')
         puts "balance: $#{balance}"
 
     when 2
-        show_balance()
+        make_withdrawl()
 
     when 3
-        #show eposit
-        def deposit()
-        end
+        #show deposit
+        make_deposit()
+        
 
     when 4
         #exit
@@ -39,6 +39,56 @@ def welcome_and_input(atm_view)
     end    
     welcome_and_input(atm_view)
 end
+
+
+def show_balance
+    balance = get_balance
+    puts "balance: $#{balance}"
+end
+
+def get_balance
+    balance = File.read('balance.txt')
+end
+
+
+def make_withdrawl
+    puts "how much?"
+    amount = gets.chomp # get amount from the user
+    
+    valid = Validators.validate_withdrawl(amount) #validate the input
+        if !valid
+            puts "invalid amount, please enter a positive number" #print out error message
+            make_withdrawl()
+        end
+
+        balance = get_balance()
+        valid = Validators.validate_amount_against_balance(amount, balance) 
+        if !valid  # check the balance > amount  
+            puts "Your withdrawl is greater than your balance" 
+            make_withdrawl()
+        end
+        update_amount = (balance.to_i - amount.to_i).to_s # make the withdrawl, calculate in integer and make it a string 
+        File.write('balance.txt',update_amount) #the second argument needs to be a string (that's why it was changed to string above)
+        puts "Your new balance is #{update_amount}" # print new bank balance
+           
+    
+end
+
+def make_deposit
+    puts "how much to deposit?"
+
+    amount = gets.chomp
+    valid = Validators.validate_withdrawl(amount)
+    if !valid
+        puts "Invalid amount, please enter a positive number"
+        make_deposit()
+    end  
+    balance = get_balance()
+    new_amount = (balance.to_i + amount.to_i).to_s
+    File.write('balance.txt', new_amount)
+    puts "Your new amount is #{new_amount}"
+end
+
 
 atm_view = AtmView.new
 welcome_and_input(atm_view)
