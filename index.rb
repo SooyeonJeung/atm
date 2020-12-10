@@ -89,6 +89,13 @@ def make_deposit
     puts "Your new amount is #{new_amount}"
 end
 
+if ARGV.length > 0
+    ARGV[0] == '-h' || ARGV[0] == '--help'
+    puts 'you asked for help '
+else
+    atm_view = AtmView.new
+    welcome_and_input(atm_view)
+end
 
 atm_view = AtmView.new
 welcome_and_input(atm_view)
